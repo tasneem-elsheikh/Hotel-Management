@@ -1,0 +1,15 @@
+C:\Users\mahmo\Desktop\AAST\4th Term\OOP\New folder (2)\bin\Debug\net6.0\Hotel Management System.exe
+C:\Users\mahmo\Desktop\AAST\4th Term\OOP\New folder (2)\bin\Debug\net6.0\Hotel Management System.deps.json
+C:\Users\mahmo\Desktop\AAST\4th Term\OOP\New folder (2)\bin\Debug\net6.0\Hotel Management System.runtimeconfig.json
+C:\Users\mahmo\Desktop\AAST\4th Term\OOP\New folder (2)\bin\Debug\net6.0\Hotel Management System.dll
+C:\Users\mahmo\Desktop\AAST\4th Term\OOP\New folder (2)\bin\Debug\net6.0\Hotel Management System.pdb
+C:\Users\mahmo\Desktop\AAST\4th Term\OOP\New folder (2)\obj\Debug\net6.0\Hotel Management System.csproj.AssemblyReference.cache
+C:\Users\mahmo\Desktop\AAST\4th Term\OOP\New folder (2)\obj\Debug\net6.0\Hotel Management System.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\mahmo\Desktop\AAST\4th Term\OOP\New folder (2)\obj\Debug\net6.0\Hotel Management System.AssemblyInfoInputs.cache
+C:\Users\mahmo\Desktop\AAST\4th Term\OOP\New folder (2)\obj\Debug\net6.0\Hotel Management System.AssemblyInfo.cs
+C:\Users\mahmo\Desktop\AAST\4th Term\OOP\New folder (2)\obj\Debug\net6.0\Hotel Management System.csproj.CoreCompileInputs.cache
+C:\Users\mahmo\Desktop\AAST\4th Term\OOP\New folder (2)\obj\Debug\net6.0\Hotel Management System.dll
+C:\Users\mahmo\Desktop\AAST\4th Term\OOP\New folder (2)\obj\Debug\net6.0\refint\Hotel Management System.dll
+C:\Users\mahmo\Desktop\AAST\4th Term\OOP\New folder (2)\obj\Debug\net6.0\Hotel Management System.pdb
+C:\Users\mahmo\Desktop\AAST\4th Term\OOP\New folder (2)\obj\Debug\net6.0\Hotel Management System.genruntimeconfig.cache
+C:\Users\mahmo\Desktop\AAST\4th Term\OOP\New folder (2)\obj\Debug\net6.0\ref\Hotel Management System.dll
