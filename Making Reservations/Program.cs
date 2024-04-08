@@ -100,76 +100,79 @@ namespace Hotel_Management_System
             type = Console.ReadLine();
 
             if (type == "Single")
-            {
-                while (0 < room_number && room_number < 500)
+            {  
+                while (0 < room_number && room_number <= 500)
                 {
                     int counter = 0;
+                    counter++;
+                    
                     if (occupancy == false)
                     {
-                        counter++;
                         room_number = counter;
                         return $"{this.room_number}is vaccant";
                     }
-                    else
-                    {
-                        return $"all rooms of this type are occupied";
-                    }
+                   
                 }
+
+                return "all rooms of this type are occupied";
             }
+            
 
             else if (type == "Double")
             {
                 while (500 < room_number && room_number <= 800)
                 {
                     int counter = 500;
+                    counter++;
+
                     if (occupancy == false)
                     {
-                        counter++;
+                        
                         room_number = counter;
                         return $"{this.room_number}is vaccant";
                     }
-                    else
-                    {
-                        return $"all rooms of this type are occupied";
-                    }
+
                 }
+                return $"all rooms of this type are occupied";
             }
+
 
             else if (type == "King")
             {
                 while (800 < room_number && room_number <= 950)
                 {
                     int counter = 800;
+                    counter++;
                     if (occupancy == false)
                     {
-                        counter++;
+                        
                         room_number = counter;
                         return $"{this.room_number}is vaccant";
                     }
-                    else
-                    {
-                        return $"all rooms of this type are occupied";
-                    }
+
                 }
+                return $"all rooms of this type are occupied";
             }
+
 
             else if (type == "Suite")
             {
                 while (950 < room_number && room_number <= 1000)
                 {
                     int counter = 950;
+                    counter++;
                     if (occupancy == false)
-                    {
-                        counter++;
+                    {  
                         room_number = counter;
                         return $"{this.room_number}is vaccant";
-                    }
-                    else
-                    {
-                        return $"all rooms of this type are occupied";
-                    }
+                    }   
+                    
                 }
+                return $"all rooms of this type are occupied";
             }
+
+           
+            return "Error";
         }//End of Class
     }//End of Program
 }
