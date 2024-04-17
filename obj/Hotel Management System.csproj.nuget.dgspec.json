@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\mahmo\\Desktop\\AAST\\4th Term\\OOP\\New folder (2)\\Hotel Management System.csproj": {}
+    "C:\\Users\\mahmo\\Desktop\\AAST\\Github Project\\Hotel Management repo\\Hotel Management System.csproj": {}
   },
   "projects": {
-    "C:\\Users\\mahmo\\Desktop\\AAST\\4th Term\\OOP\\New folder (2)\\Hotel Management System.csproj": {
+    "C:\\Users\\mahmo\\Desktop\\AAST\\Github Project\\Hotel Management repo\\Hotel Management System.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\mahmo\\Desktop\\AAST\\4th Term\\OOP\\New folder (2)\\Hotel Management System.csproj",
+        "projectUniqueName": "C:\\Users\\mahmo\\Desktop\\AAST\\Github Project\\Hotel Management repo\\Hotel Management System.csproj",
         "projectName": "Hotel Management System",
-        "projectPath": "C:\\Users\\mahmo\\Desktop\\AAST\\4th Term\\OOP\\New folder (2)\\Hotel Management System.csproj",
+        "projectPath": "C:\\Users\\mahmo\\Desktop\\AAST\\Github Project\\Hotel Management repo\\Hotel Management System.csproj",
         "packagesPath": "C:\\Users\\mahmo\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\mahmo\\Desktop\\AAST\\4th Term\\OOP\\New folder (2)\\obj\\",
+        "outputPath": "C:\\Users\\mahmo\\Desktop\\AAST\\Github Project\\Hotel Management repo\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\mahmo\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -39,6 +39,12 @@
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
+          "dependencies": {
+            "EntityFramework": {
+              "target": "Package",
+              "version": "[6.4.4, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
