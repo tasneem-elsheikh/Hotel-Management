@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Net.Http.Headers;
 
 namespace Hotel_Management_System
 {
@@ -13,9 +14,9 @@ namespace Hotel_Management_System
      class Reservation
     {
         protected string firstname;
-        protected string secondname;
+        protected string lastname;
         protected string phone_number;
-        protected int id;
+        protected string id;
         protected int room_number;
         protected bool occupancy;
         protected string roomtype;
@@ -26,11 +27,16 @@ namespace Hotel_Management_System
         // Creating Properties
         /*--------------------------------------------------------------------------------*/
 
-        public int Id 
+        public string Id 
         { 
             get { return id; }
-            set { id = value; } 
-        }
+            set { 
+                if(value.Length == 14) // Checking the length of the national id
+                {
+                    id = value;
+                }
+                }
+            }
 
         public string FirstName
         {
@@ -38,10 +44,10 @@ namespace Hotel_Management_System
             set { firstname = value; }
         }
 
-        public string SecondName
+        public string LastName
         {
-            get { return secondname; }
-            set { secondname = value; }
+            get { return lastname; }
+            set { lastname = value; }
         }
 
         public string PhoneNumber
@@ -80,7 +86,7 @@ namespace Hotel_Management_System
             get { return roomtype; }
             set
             {
-                if (value == "Single" || value == "Double" || value == "King" || value == "Suite")
+                if (value == "Single" || value == "Double"|| value == "Suite")
                 {
                     roomtype = value;
                 }
@@ -97,7 +103,7 @@ namespace Hotel_Management_System
         DBAccess dbAccess = new DBAccess();
         public void BookRoom(string firstName, string lastName, string phoneNumber, int roomNumber, int id)
         {
-            dbAccess.InsertCustomerInfo(firstname, secondname, phone_number, room_number, id);
+            dbAccess.InsertCustomerInfo(firstname,lastname, phone_number, room_number, id); ;
         }
 
         /*--------------------------------------------------------------------------------------------------------*/
@@ -109,12 +115,14 @@ namespace Hotel_Management_System
         //Constructors
         /*--------------------------------------------------------------------------------------------------------*/
 
-        public Reservation(string firstname, string secondname, string phone_number, int room_number, string roomtype)
+        public Reservation( string firstname, string lastname, string phone_number, string id, int room_number,bool occupancy, string roomtype )
         {
             this.firstname = firstname;
-            this.secondname = secondname;
+            this.lastname = lastname;
             this.phone_number = phone_number;
+            this.id = id;
             this.room_number = room_number;
+            this.occupancy = occupancy;
             this.roomtype = roomtype;
         }
 
@@ -128,134 +136,86 @@ namespace Hotel_Management_System
         //A Method to Read the ClientInfo
         public void InsertGuestInfo()
         {
-            Console.WriteLine("Please enter the Guest's first name then second name:");
+            Console.WriteLine("Please enter the Guest's first name then last name:");
             firstname = Console.ReadLine();
-            secondname = Console.ReadLine();
+            lastname = Console.ReadLine();
 
             Console.WriteLine("Please enter the Guest's phone number and make sue they consist of 11 digits");
             phone_number = Console.ReadLine();
 
             Console.WriteLine("Enter the Guest's Id: ");
-            id = int.Parse(Console.ReadLine());
+            id = Console.ReadLine();
 
-            Console.WriteLine("Please enter the Guest's Room Type");
-            roomtype = Console.ReadLine();
         }
 
+        private bool IsRoomOccupied(int room_number)
+        {
+            if(occupancy == true)
+            {
+                // room is empty therefore return false becase room is not occupied
+                return false;
+            }
+
+            else // the other condition is occupancy == false which indicates that the room is not empty and as a result the program will retutn true as the room is occupied
+            {
+                return true;
+            }
+        }
 
         public string GetVacancy()
         {
-            Console.WriteLine("Enter the room type the customer desires, whether Single, Double, King or Suite:");
+            Console.WriteLine("Enter the room type the Guest desires, whether Single, Double or Suite:");
             roomtype = Console.ReadLine();
 
-            if (roomtype == "Single")
+            int startroomnumber = 0;
+            int endroomnumber = 0;
+            int i;
+            switch (roomtype)
             {
-                while (0 < room_number && room_number <= 500)
-                {
-                    int counter = 0;
-                    counter++;
+                case "Single":
+                    startroomnumber = 1;
+                    endroomnumber = 600;
+                    break;
 
-                    if (occupancy == false)
-                    {
-                        room_number = counter;
-                        return $"{this.room_number}is vaccant";
-                    }
+                case "Double":
+                    startroomnumber = 601;
+                    endroomnumber = 900;
+                    break;
 
-                }
+                case "Suite":
+                    startroomnumber = 901;
+                    endroomnumber = 1000;
+                    break;
 
-                return "all rooms of this roomtype are occupied";
+                default:
+                    return "Invalid room type !!";
             }
 
-
-            else if (roomtype == "Double")
+            for (i = startroomnumber; i <= endroomnumber; i++)
             {
-                while (500 < room_number && room_number <= 800)
+                if (!IsRoomOccupied(i))
                 {
-                    int counter = 500;
-                    counter++;
-
-                    if (occupancy == false)
-                    {
-
-                        room_number = counter;
-                        return $"{this.room_number}is vaccant";
-                    }
-
+                    return $"Room number {i} is vaccant";
                 }
-                return $"all rooms of this roomtype are occupied";
+
             }
-
-
-            else if (roomtype == "King")
-            {
-                while (800 < room_number && room_number <= 950)
-                {
-                    int counter = 800;
-                    counter++;
-                    if (occupancy == false)
-                    {
-
-                        room_number = counter;
-                        return $"{this.room_number}is vaccant";
-                    }
-
-                }
-                return $"all rooms of this roomtype are occupied";
-            }
-
-
-            else if (roomtype == "Suite")
-            {
-                while (950 < room_number && room_number <= 1000)
-                {
-                    int counter = 950;
-                    counter++;
-                    if (occupancy == false)
-                    {
-                        room_number = counter;
-                        return $"{this.room_number}is vaccant";
-                    }
-
-                }
-                return $"all rooms of this type are occupied";
-            }
-
-
-            return "Error";
+            room_number = i;
+            //occupancy = false;
+            return $" All rooms of type {roomtype} are occupied";
         }
 
-
-
-
-
-
-
-
-
-        //Check-In and Check-Out Implementation
-        protected int Days_number;
-
-        // Property of Number of Days
-        public int Number_of_Days
+        public void occupyRoom(int room_number)
         {
-            get { return Days_number; }
-            set { Days_number = value; }
+            if (occupancy == true)
+            {
+                occupancy = false;
+                Console.WriteLine($"Room {room_number} is now booked successfully");
+            }
+
+            else
+            {
+                Console.WriteLine("Failed to book the room");
+            }
         }
-
-        //Date
-        protected int Day;
-        protected int Month;
-        protected int Year;
-
-        //Time
-        protected int Hour;
-        protected int Minute;
-
-        
-
-
-        
-
-
-    }//End of Class
+     }//End of Class
 }//End of Program

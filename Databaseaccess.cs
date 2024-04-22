@@ -17,7 +17,7 @@ namespace Hotel_Management_System
         private static SqlDataAdapter adapter = new SqlDataAdapter();
         public SqlTransaction DbTran;
 
-        private static string strConnString = "Data Source=LAPTOP-3MO76OTM\\SQLEXPRESS;Initial Catalog=Test;Integrated Security=True";
+        private static string strConnString = "Data Source=DESKTOP-ITHEOH1\\SQLEXPRESS;Initial Catalog=Test;Integrated Security=True";
 
         
         // A Method to insert the Client info inside the database
