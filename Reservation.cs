@@ -200,7 +200,6 @@ namespace Hotel_Management_System
 
             }
             room_number = i;
-            //occupancy = false;
             return $" All rooms of type {roomtype} are occupied";
         }
 
