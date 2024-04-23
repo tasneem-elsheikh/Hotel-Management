@@ -11,12 +11,12 @@ using System.Net.Http.Headers;
 namespace Hotel_Management_System
 {
     
-     class Reservation
+     public class Reservation 
     {
         protected string firstname;
         protected string lastName;
         protected string phone_number;
-        protected string id;
+        /*protected*/public  string id;
         protected int room_number;
         protected bool occupancy;
         protected string roomtype;
@@ -101,9 +101,10 @@ namespace Hotel_Management_System
         /*--------------------------------------------------------------------------------------------------------*/
 
         DBAccess dbAccess = new DBAccess();
-        public void BookRoom(string firstName, string lastName, string phoneNumber, int roomNumber, int id)
+        public void BookRoom(string firstName, string lastName, string phoneNumber, int roomNumber, string id)
         {
-            dbAccess.InsertCustomerInfo(firstname,lastName, phone_number, room_number, id); ;
+            dbAccess.InsertCustomerInfo(firstName, lastName, phoneNumber, roomNumber, id);
+
         }
 
         /*--------------------------------------------------------------------------------------------------------*/
@@ -151,6 +152,31 @@ namespace Hotel_Management_System
 
 
         }
+
+        public void DeleteClient(string id)
+        {
+            dbAccess.DeleteCustomerInfo(id);
+
+        }
+
+
+        //Searching int the client info table and returning values by calling the method inside the database 
+        public Reservation SearchCustomerById(string id)
+        {
+            DBAccess dbAccess1 = new DBAccess();
+
+            try
+            {
+                return dbAccess1.SearchCustomerById(id);
+            }
+            catch (Exception ex)
+            {
+                // Handle any exceptions that occur during the search
+                Console.WriteLine("An error occurred while searching for the customer: " + ex.Message);
+                return null;
+            }
+        }
+
 
         private bool IsRoomOccupied(int room_number)
         {
@@ -220,5 +246,118 @@ namespace Hotel_Management_System
                 Console.WriteLine("Failed to book the room");
             }
         }
-     }//End of Class
+
+
+
+
+
+
+        // CHECKIn
+
+        //Check-In and Check-Out Implementation 
+        // Might use Interface for multiple inheritance
+
+        //CheckIn Variables
+        /*--------------------------------------------------------------------------------------------------------*/
+
+        //Dates
+
+        protected int Days_number;
+
+        public DateOnly ArrivalDate;
+        public TimeSpan ArrivalTime;
+
+        public DateOnly DepartureDate;
+        public TimeSpan DepartureTime;
+
+        public string status;
+        /*--------------------------------------------------------------------------------------------------------*/
+
+
+        // Property of Number of Days
+        public int Number_of_Days
+        {
+            get { return Days_number; }
+            set { Days_number = value; }
+        }
+
+        /*--------------------------------------------------------------------------------------------------------*/
+        public int RoomBill;
+
+        DBAccess Db1 = new DBAccess(); //The Variable that will link to the Database
+
+        public void CheckInDate(/*string Id*/)
+        {
+            Console.WriteLine("Enter the Date of the CheckIn in the format YYYY-MM-DD. ");
+            string inputDate = Console.ReadLine();
+            if (DateOnly.TryParse(inputDate, out ArrivalDate)) //Assigning the Arrival Date
+            {
+                Console.WriteLine($"You entered: {ArrivalDate}");
+
+                //Storing Database
+                Db1.CheckInDate(ArrivalDate, Id);
+            }
+            else
+            {
+                Console.WriteLine("Invalid date format. Please enter a valid date in the format YYYY-MM-DD.");
+            }
+ 
+        }
+
+
+        //Check the Payment Status
+        public void PaymentStatus(/*string Id*/)
+        {
+            TimeSpan Status = new TimeSpan(18, 0, 0);
+
+            if (ArrivalTime >= Status)
+            {
+                status = "Must Pay";
+            }
+            else
+            {
+                status = "No Obligation for Now";
+            }
+            Db1.UpdateArrivalStatus(status, Id);
+        }
+
+        //Storing the Arrival time of CheckIn
+        public void CheckInTime(/*string Id*/)
+        {
+            TimeSpan Arrival1 = DateTime.Now.TimeOfDay;
+            //  Hour = Arrival.Hours;
+            //  Minute = Arrival.Minutes;
+
+            //Console.WriteLine($"Arrival Time is {Hour}:{Minute}");
+            Console.WriteLine($"Arrival Time is {Arrival1}");
+            ArrivalTime = Arrival1;
+            PaymentStatus();
+            Console.WriteLine($"Payment Status: {status}");
+            Db1.UpdateArrivalTime(ArrivalTime, Id,status);
+        }
+
+
+        //Check Out
+
+        public void CheckOutDate()
+        {
+            Console.WriteLine("Enter the Date of the Check Out in the format YYYY-MM-DD. ");
+            string inputDate = Console.ReadLine();
+            if (DateOnly.TryParse(inputDate, out DepartureDate)) //Assigning the Arrival Date
+            {
+                Console.WriteLine($"You entered: {DepartureDate}");
+
+                //Storing Database
+                Db1.CheckOutDate(DepartureDate, id);
+            }
+            else
+            {
+                Console.WriteLine("Invalid date format. Please enter a valid date in the format YYYY-MM-DD.");
+            }
+
+        }
+
+
+
+    }//End of Class
 }//End of Program
