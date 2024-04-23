@@ -14,7 +14,7 @@ namespace Hotel_Management_System
      class Reservation
     {
         protected string firstname;
-        protected string lastname;
+        protected string lastName;
         protected string phone_number;
         protected string id;
         protected int room_number;
@@ -46,8 +46,8 @@ namespace Hotel_Management_System
 
         public string LastName
         {
-            get { return lastname; }
-            set { lastname = value; }
+            get { return lastName; }
+            set { lastName = value; }
         }
 
         public string PhoneNumber
@@ -103,7 +103,7 @@ namespace Hotel_Management_System
         DBAccess dbAccess = new DBAccess();
         public void BookRoom(string firstName, string lastName, string phoneNumber, int roomNumber, int id)
         {
-            dbAccess.InsertCustomerInfo(firstname,lastname, phone_number, room_number, id); ;
+            dbAccess.InsertCustomerInfo(firstname,lastName, phone_number, room_number, id); ;
         }
 
         /*--------------------------------------------------------------------------------------------------------*/
@@ -115,10 +115,10 @@ namespace Hotel_Management_System
         //Constructors
         /*--------------------------------------------------------------------------------------------------------*/
 
-        public Reservation( string firstname, string lastname, string phone_number, string id, int room_number,bool occupancy, string roomtype )
+        public Reservation( string firstname, string lastName, string phone_number, string id, int room_number,bool occupancy, string roomtype )
         {
             this.firstname = firstname;
-            this.lastname = lastname;
+            this.lastName = lastName;
             this.phone_number = phone_number;
             this.id = id;
             this.room_number = room_number;
@@ -134,17 +134,21 @@ namespace Hotel_Management_System
 
 
         //A Method to Read the ClientInfo
+        //A Method to Read the ClientInfo
         public void InsertGuestInfo()
         {
-            Console.WriteLine("Please enter the Guest's first name then last name:");
+            Console.WriteLine("Please enter your first name then second name:");
             firstname = Console.ReadLine();
-            lastname = Console.ReadLine();
 
-            Console.WriteLine("Please enter the Guest's phone number and make sue they consist of 11 digits");
+            Console.WriteLine("Please enter your Last Name");
+            lastName = Console.ReadLine();
+
+            Console.WriteLine("Please enter your phone number");
             phone_number = Console.ReadLine();
 
-            Console.WriteLine("Enter the Guest's Id: ");
+            Console.WriteLine("Enter your Id: ");
             id = Console.ReadLine();
+
 
         }
 
