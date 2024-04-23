@@ -11,7 +11,7 @@ using System.Net.Http.Headers;
 namespace Hotel_Management_System
 {
     
-     class Reservation
+     public class Reservation 
     {
         protected string firstname;
         protected string lastName;
@@ -101,9 +101,10 @@ namespace Hotel_Management_System
         /*--------------------------------------------------------------------------------------------------------*/
 
         DBAccess dbAccess = new DBAccess();
-        public void BookRoom(string firstName, string lastName, string phoneNumber, int roomNumber, int id)
+        public void BookRoom(string firstName, string lastName, string phoneNumber, int roomNumber, string id)
         {
-            dbAccess.InsertCustomerInfo(firstname,lastName, phone_number, room_number, id); ;
+            dbAccess.InsertCustomerInfo(firstName, lastName, phoneNumber, roomNumber, id);
+
         }
 
         /*--------------------------------------------------------------------------------------------------------*/
@@ -151,6 +152,31 @@ namespace Hotel_Management_System
 
 
         }
+
+        public void DeleteClient(string id)
+        {
+            dbAccess.DeleteCustomerInfo(id);
+
+        }
+
+
+        //Searching int the client info table and returning values by calling the method inside the database 
+        public Reservation SearchCustomerById(string id)
+        {
+            DBAccess dbAccess1 = new DBAccess();
+
+            try
+            {
+                return dbAccess1.SearchCustomerById(id);
+            }
+            catch (Exception ex)
+            {
+                // Handle any exceptions that occur during the search
+                Console.WriteLine("An error occurred while searching for the customer: " + ex.Message);
+                return null;
+            }
+        }
+
 
         private bool IsRoomOccupied(int room_number)
         {
@@ -220,5 +246,104 @@ namespace Hotel_Management_System
                 Console.WriteLine("Failed to book the room");
             }
         }
-     }//End of Class
+
+
+
+
+
+
+        // CHECKIn
+
+        //Check-In and Check-Out Implementation 
+        // Might use Interface for multiple inheritance
+
+        //CheckIn Variables
+        /*--------------------------------------------------------------------------------------------------------*/
+
+        //Date
+        protected int Day;
+        protected int Month;
+        protected int Year;
+
+        //Time
+        protected int Hour;
+        protected int Minute;
+
+        protected int Days_number;
+
+        /*--------------------------------------------------------------------------------------------------------*/
+
+
+
+        /*--------------------------------------------------------------------------------------------------------*/
+
+        //Properties
+        public int day
+        {
+            get { return Day; }
+            set { Day = value; }
+        }
+
+        public int month
+        {
+            get { return Month; }
+            set { Month = value; }
+        }
+
+        public int year
+        {
+            get { return Year; }
+            set { Year = value; }
+        }
+
+        public int hour
+        {
+            get { return Hour; }
+            set { Hour = value; }
+        }
+
+        public int minute
+        {
+            get { return Minute; }
+            set { Minute = value; }
+        }
+
+        // Property of Number of Days
+        public int Number_of_Days
+        {
+            get { return Days_number; }
+            set { Days_number = value; }
+        }
+
+        /*--------------------------------------------------------------------------------------------------------*/
+
+        DBAccess Db1 = new DBAccess();
+        public void CheckIn()
+        {
+            Console.WriteLine("Enter the Date of the CheckIn: ");
+            Day = int.Parse(Console.ReadLine());
+            Month = int.Parse(Console.ReadLine());
+            Year = int.Parse(Console.ReadLine());
+
+
+            //Storing Database
+            Db1.CheckInDate(Day, Month, Year/*, Hour, Minute*//*, Room_Number*/);
+        }
+
+
+
+        //Storing the Arrival time of CheckIn
+        public void CheckInTime()
+        {
+            TimeSpan Arrival = DateTime.Now.TimeOfDay;
+            Hour = Arrival.Hours;
+            Minute = Arrival.Minutes;
+
+            Console.WriteLine($"Arrival Time is {Hour}:{Minute}");
+            Db1.CheckInTime(5, Hour, Minute);
+        }
+
+
+
+    }//End of Class
 }//End of Program
