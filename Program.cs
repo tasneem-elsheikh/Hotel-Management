@@ -67,6 +67,16 @@ namespace Hotel_Management_System
                         }
 
 
+                        //Delete
+                        if (Edit == 1)
+                        {
+                            Console.WriteLine("Enter the Guest's Id: ");
+                            G1.Id = Console.ReadLine();
+                            G1 = G1.SearchCustomerById(G1.Id);
+                            G1.DeleteClient(G1.Id);
+                        }
+
+
                     }
 
 
