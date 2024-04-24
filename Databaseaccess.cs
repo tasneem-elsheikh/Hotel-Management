@@ -17,18 +17,18 @@ namespace Hotel_Management_System
         private static SqlDataAdapter adapter = new SqlDataAdapter();
         public SqlTransaction DbTran;
 
-        private static string strConnString = "Data Source=LAPTOP-3MO76OTM\\SQLEXPRESS;Initial Catalog=Test;Integrated Security=True";
+        private static string strConnString = "Data Source=laptop-3mo76otm\\sqlexpress;Initial Catalog=Project;Integrated Security=True";
 
 
         // A Method to insert the Client info inside the database
-        public void InsertCustomerInfo(string firstname, string lastName, string phone_number, int room_number, string id)
+        public void InsertGuestInfo(string firstname, string lastName, string phone_number, int room_number, string id)
         {
 
-            SqlCommand insertCommand = new SqlCommand("insert into Client_info(FirstName,SecondName,Phone_Number,Room_Number,Id) values(@FirstName, @SecondName, @Phone_Number, @Room_Number, @Id)");
+            SqlCommand insertCommand = new SqlCommand("insert into Guest_Info(FirstName,LastName,Phone_Number,Room_Number,Id) values(@FirstName, @LastName, @Phone_Number, @Room_Number, @Id)");
             insertCommand.Parameters.Add(new SqlParameter("@Id", id));
             insertCommand.Parameters.Add(new SqlParameter("@Phone_Number", phone_number));
             insertCommand.Parameters.Add(new SqlParameter("@FirstName", firstname));
-            insertCommand.Parameters.Add(new SqlParameter("@SecondName", lastName));
+            insertCommand.Parameters.Add(new SqlParameter("@LastName", lastName));
             insertCommand.Parameters.Add(new SqlParameter("@Room_Number", room_number));
 
 
@@ -37,11 +37,11 @@ namespace Hotel_Management_System
 
 
         // A Method to insert the Client info inside the database
-        public void DeleteCustomerInfo(string id)
+        public void DeleteGuestInfo(string id)
         {
             try
             {
-                SqlCommand deleteCommand = new SqlCommand("DELETE FROM Client_info WHERE Id = @Id");
+                SqlCommand deleteCommand = new SqlCommand("DELETE FROM Guest_Info WHERE Id = @Id");
                 deleteCommand.Parameters.Add(new SqlParameter("@Id", id));
 
                 executeQuery(deleteCommand);
@@ -55,29 +55,14 @@ namespace Hotel_Management_System
         }
 
 
-        //public void CheckInDate(int Day, int Month, int Year/*, int Hour, int Minute*//*, int Room_Number*/)
-        //{
-
-        //    SqlCommand insertCommand1 = new SqlCommand("insert into CheckIn(Day, Month, Year, Hour, Minute,Room_Number) values(@Day, @Month, @Year, @Hour, @Minute,@Room_Number)");
-        //    insertCommand1.Parameters.Add(new SqlParameter("@Day", Day));
-        //    insertCommand1.Parameters.Add(new SqlParameter("@Month", Month));
-        //    insertCommand1.Parameters.Add(new SqlParameter("@Year", Year));
-        //    //insertCommand1.Parameters.Add(new SqlParameter("@Hour", Hour));
-        //    //insertCommand1.Parameters.Add(new SqlParameter("@Minute", Minute));
-        //    //insertCommand1.Parameters.Add(new SqlParameter("@Room_Number", Room_Number));
-
-        //    executeQuery(insertCommand1);
-        //}
-
-
         //CheckIn using new datatype prototype
         public void CheckInDate(DateOnly checkInDate, string Id)
         {
             // Convert DateOnly to DateTime using constructor
             DateTime date = new DateTime(checkInDate.Year, checkInDate.Month, checkInDate.Day);
 
-            SqlCommand insertCommand1 = new SqlCommand("insert into UserTab(ID, CheckIn) values(@ID, @CheckIn)");
-            insertCommand1.Parameters.Add(new SqlParameter("@ID", Id));
+            SqlCommand insertCommand1 = new SqlCommand("insert into Book_Reservation(Id, CheckIn) values(@Id, @CheckIn)");
+            insertCommand1.Parameters.Add(new SqlParameter("@Id", Id));
             insertCommand1.Parameters.Add(new SqlParameter("@CheckIn", date)); // Use DateTime here
 
             executeQuery(insertCommand1);
@@ -87,9 +72,9 @@ namespace Hotel_Management_System
         //Recording the time of arrival of the guest
         public void UpdateArrivalTime(TimeSpan arrivalTime, string id,string status)
         {
-            // Assuming your database column for check-in time is named Check_In_Time
-            SqlCommand updateCommand = new SqlCommand("UPDATE UserTab SET Check_In_Time = @Check_In_Time, Status = @Status WHERE ID = @ID");
-            updateCommand.Parameters.Add(new SqlParameter("@ID", id));
+         
+            SqlCommand updateCommand = new SqlCommand("UPDATE Book_Reservation SET Check_In_Time = @Check_In_Time, Status = @Status WHERE Id = @Id");
+            updateCommand.Parameters.Add(new SqlParameter("@Id", id));
             updateCommand.Parameters.Add(new SqlParameter("@Check_In_Time", arrivalTime)); // Convert TimeOnly to string
             updateCommand.Parameters.Add(new SqlParameter("@Status", status)); // Updating Status
             executeQuery(updateCommand);
@@ -99,9 +84,9 @@ namespace Hotel_Management_System
 
         public void UpdateArrivalStatus(string status, string id)
         {
-            // Assuming your database column for check-in time is named Check_In_Time
-            SqlCommand updateCommand = new SqlCommand("UPDATE UserTab SET Status = @Status WHERE ID = @ID");
-            updateCommand.Parameters.Add(new SqlParameter("@ID", id));
+            
+            SqlCommand updateCommand = new SqlCommand("UPDATE Book_Reservation SET Status = @Status WHERE Id = @Id");
+            updateCommand.Parameters.Add(new SqlParameter("@Id", id));
             updateCommand.Parameters.Add(new SqlParameter("@Status", status)); // Convert TimeOnly to string
 
             executeQuery(updateCommand);
@@ -109,26 +94,13 @@ namespace Hotel_Management_System
 
 
 
-        //Recording the Date of Departure of the guest
-        //public void CheckOutDate(DateOnly DepartureDate, string id)
-        //{
-        //    // Assuming your database column for check-in time is named Check_In_Time
-        //    SqlCommand updateCommand = new SqlCommand("UPDATE UserTab SET CheckOut = @CheckOut WHERE ID = @ID");
-        //    updateCommand.Parameters.Add(new SqlParameter("@ID", id));
-        //    updateCommand.Parameters.Add(new SqlParameter("@CheckOut", DepartureDate));
-
-        //    executeQuery(updateCommand);
-
-        //}
-
         public void CheckOutDate(DateOnly DepartureDate, string id)
         {
-            // Convert DateOnly to DateTime using constructor
+            
             DateTime date = new DateTime(DepartureDate.Year, DepartureDate.Month, DepartureDate.Day);
 
-            // Assuming your database column for check-out date is named CheckOut
-            SqlCommand updateCommand = new SqlCommand("UPDATE UserTab SET CheckOut = @CheckOut WHERE ID = @ID");
-            updateCommand.Parameters.Add(new SqlParameter("@ID", id));
+            SqlCommand updateCommand = new SqlCommand("UPDATE Book_Reservation SET CheckOut = @CheckOut WHERE Id = @Id");
+            updateCommand.Parameters.Add(new SqlParameter("@Id", id));
             updateCommand.Parameters.Add(new SqlParameter("@CheckOut", date)); // Use DateTime here
 
             executeQuery(updateCommand);
@@ -139,13 +111,40 @@ namespace Hotel_Management_System
         public void UpdateDepartureTime(TimeSpan DepartureTime, string id)
         {
             // Assuming your database column for check-in time is named Check_In_Time
-            SqlCommand updateCommand = new SqlCommand("UPDATE UserTab SET Check_Out_Time = @Check_Out_Time WHERE ID = @ID");
-            updateCommand.Parameters.Add(new SqlParameter("@ID", id));
+            SqlCommand updateCommand = new SqlCommand("UPDATE Book_Reservation SET Check_Out_Time = @Check_Out_Time WHERE Id = @Id");
+            updateCommand.Parameters.Add(new SqlParameter("@Id", id));
             updateCommand.Parameters.Add(new SqlParameter("@Check_Out_Time", DepartureTime));
 
             executeQuery(updateCommand);
 
         }
+
+
+        public void UpdateCheckInDate(string id, DateOnly newCheckInDate)
+        {
+          
+            DateTime date = new DateTime(newCheckInDate.Year, newCheckInDate.Month, newCheckInDate.Day);
+
+            SqlCommand updateCommand = new SqlCommand("UPDATE Book_Reservation SET CheckIn = @CheckIn WHERE Id = @Id");
+            updateCommand.Parameters.Add(new SqlParameter("@Id", id));
+            updateCommand.Parameters.Add(new SqlParameter("@CheckIn", date));
+
+            executeQuery(updateCommand);
+        }
+
+        public void UpdateCheckOutDate(string id, DateOnly newCheckOutDate)
+        {
+            
+            DateTime date = new DateTime(newCheckOutDate.Year, newCheckOutDate.Month, newCheckOutDate.Day);
+
+            SqlCommand updateCommand = new SqlCommand("UPDATE Book_Reservation SET CheckOut = @CheckOut WHERE Id = @Id");
+            updateCommand.Parameters.Add(new SqlParameter("@Id", id));
+            updateCommand.Parameters.Add(new SqlParameter("@CheckOut", date));
+
+            executeQuery(updateCommand);
+        }
+
+
 
         public bool Occupancy1(int room_number)
         {
@@ -303,13 +302,13 @@ namespace Hotel_Management_System
                     createConn();
                 }
 
-                // Define the SQL query for searching based on the ID (primary key)
-                string query = "SELECT * FROM Client_info WHERE Id = @Id";
+                // Define the SQL query for searching based on the Id (primary key)
+                string query = "SELECT * FROM Guest_Info WHERE Id = @Id";
 
                 // Create a SqlCommand object with the query and connection
                 using (SqlCommand searchCommand = new SqlCommand(query, connection))
                 {
-                    // Add a parameter for the ID
+                    // Add a parameter for the Id
                     searchCommand.Parameters.AddWithValue("@Id", id);
 
                     // Execute the command and read the data using SqlDataReader

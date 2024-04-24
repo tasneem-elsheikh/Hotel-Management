@@ -20,8 +20,8 @@ namespace Hotel_Management_System
         protected int room_number;
         protected bool occupancy;
         protected string roomtype;
+        public int Price_Per_Night;
         
-
         
 
         // Creating Properties
@@ -103,7 +103,7 @@ namespace Hotel_Management_System
         DBAccess dbAccess = new DBAccess();
         public void BookRoom(string firstName, string lastName, string phoneNumber, int roomNumber, string id)
         {
-            dbAccess.InsertCustomerInfo(firstName, lastName, phoneNumber, roomNumber, id);
+            dbAccess.InsertGuestInfo(firstName, lastName, phoneNumber, roomNumber, id);
 
         }
 
@@ -155,7 +155,7 @@ namespace Hotel_Management_System
 
         public void DeleteClient(string id)
         {
-            dbAccess.DeleteCustomerInfo(id);
+            dbAccess.DeleteGuestInfo(id);
 
         }
 
@@ -192,7 +192,7 @@ namespace Hotel_Management_System
             }
         }
 
-        public string GetVacancy()
+        public string GetVacancy(string id)
         {
             Console.WriteLine("Enter the room type the Guest desires, whether Single, Double or Suite:");
             roomtype = Console.ReadLine();
@@ -205,16 +205,19 @@ namespace Hotel_Management_System
                 case "Single":
                     startroomnumber = 1;
                     endroomnumber = 600;
+                    Price_Per_Night = 100;
                     break;
 
                 case "Double":
                     startroomnumber = 601;
                     endroomnumber = 900;
+                    Price_Per_Night = 150;
                     break;
 
                 case "Suite":
                     startroomnumber = 901;
                     endroomnumber = 1000;
+                    Price_Per_Night = 250;
                     break;
 
                 default:
@@ -286,7 +289,7 @@ namespace Hotel_Management_System
 
         DBAccess Db1 = new DBAccess(); //The Variable that will link to the Database
 
-        public void CheckInDate(/*string Id*/)
+        public void CheckInDate(string Id)
         {
             Console.WriteLine("Enter the Date of the CheckIn in the format YYYY-MM-DD. ");
             string inputDate = Console.ReadLine();
@@ -306,7 +309,7 @@ namespace Hotel_Management_System
 
 
         //Check the Payment Status
-        public void PaymentStatus(/*string Id*/)
+        public void PaymentStatus(string Id)
         {
             TimeSpan Status = new TimeSpan(18, 0, 0);
 
@@ -322,7 +325,7 @@ namespace Hotel_Management_System
         }
 
         //Storing the Arrival time of CheckIn
-        public void CheckInTime(/*string Id*/)
+        public void CheckInTime(string Id)
         {
             TimeSpan Arrival1 = DateTime.Now.TimeOfDay;
             //  Hour = Arrival.Hours;
@@ -331,7 +334,7 @@ namespace Hotel_Management_System
             //Console.WriteLine($"Arrival Time is {Hour}:{Minute}");
             Console.WriteLine($"Arrival Time is {Arrival1}");
             ArrivalTime = Arrival1;
-            PaymentStatus();
+            PaymentStatus(Id);
             Console.WriteLine($"Payment Status: {status}");
             Db1.UpdateArrivalTime(ArrivalTime, Id,status);
         }
@@ -339,7 +342,7 @@ namespace Hotel_Management_System
 
         //Check Out
 
-        public void CheckOutDate()
+        public void CheckOutDate(string Id)
         {
             Console.WriteLine("Enter the Date of the Check Out in the format YYYY-MM-DD. ");
             string inputDate = Console.ReadLine();
@@ -348,7 +351,7 @@ namespace Hotel_Management_System
                 Console.WriteLine($"You entered: {DepartureDate}");
 
                 //Storing Database
-                Db1.CheckOutDate(DepartureDate, id);
+                Db1.CheckOutDate(DepartureDate, Id);
             }
             else
             {
@@ -356,6 +359,69 @@ namespace Hotel_Management_System
             }
 
         }
+
+
+        //Storing the Departure time of CheckOut
+        public void CheckOutTime(string Id)
+        {
+            TimeSpan Departure = DateTime.Now.TimeOfDay;
+            //  Hour = Arrival.Hours;
+            //  Minute = Arrival.Minutes;
+
+            //Console.WriteLine($"Arrival Time is {Hour}:{Minute}");
+            Console.WriteLine($"Departure Time is {Departure}");
+            DepartureTime = Departure;
+            Db1.UpdateDepartureTime(Departure, Id);
+        }
+
+
+        //Editing reservation:
+        public void EditCheckInDate(string id)
+        {
+            Console.WriteLine("Enter the New Date of the CheckIn in the format YYYY-MM-DD. ");
+            string inputDate = Console.ReadLine();
+
+            if (DateOnly.TryParse(inputDate, out ArrivalDate)) //Assigning the Arrival Date
+                 Console.WriteLine($"You entered: {ArrivalDate}");
+
+            else
+            {
+                Console.WriteLine("Invalid date format. Please enter a valid date in the format YYYY-MM-DD.");
+            }
+
+            DBAccess dbAccess = new DBAccess();
+            dbAccess.UpdateCheckInDate(id, ArrivalDate);
+
+        }
+
+        //Edit Checkin And Checkout Methods
+        public void EditCheckOutDate(string id)
+        {
+            Console.WriteLine("Enter the Date of the Check Out in the format YYYY-MM-DD. ");
+            string inputDate = Console.ReadLine();
+
+            if (DateOnly.TryParse(inputDate, out DepartureDate)) //Assigning the Arrival Date
+                Console.WriteLine($"You entered: {DepartureDate}");
+
+            else
+                Console.WriteLine("Invalid date format. Please enter a valid date in the format YYYY-MM-DD.");
+            
+
+            DBAccess dbAccess = new DBAccess();
+            dbAccess.UpdateCheckOutDate(id, DepartureDate);
+        }
+
+
+
+
+        public void Bill()
+        {
+            Days_number = DepartureDate.Day - ArrivalDate.Day;
+            RoomBill = Days_number * Price_Per_Night;
+            Console.WriteLine($"Room Bill: {RoomBill}");
+        }
+
+
 
 
 
