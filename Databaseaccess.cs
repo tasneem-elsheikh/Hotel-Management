@@ -144,15 +144,80 @@ namespace Hotel_Management_System
             executeQuery(updateCommand);
         }
 
+        /*--------------------------------------------------------------------------------------------------------*/
+       
 
 
-        public bool Occupancy1(int room_number)
+        // Methods
+        public bool IsRoomOccupiedForDates(int roomNumber, DateTime checkInDateTime, DateTime checkOutDateTime)
         {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(strConnString))
+                {
+                    connection.Open();
+                    string query = "SELECT COUNT(*) FROM Book_Reservation  WHERE RoomNumber = @RoomNumber " +
+                                   "AND ((CheckIn <= @CheckOutDateTime AND CheckOut >= @CheckInDateTime) " +
+                                   "OR (CheckIn >= @CheckInDateTime AND CheckIn <= @CheckOutDateTime))";
 
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@RoomNumber", roomNumber);
+                        command.Parameters.AddWithValue("@CheckInDateTime", checkInDateTime);
+                        command.Parameters.AddWithValue("@CheckOutDateTime", checkOutDateTime);
 
-
-            return false;
+                        int count = (int)command.ExecuteScalar();
+                        return count > 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions here (log or throw, depending on your error handling strategy)
+                throw ex;
+            }
         }
+
+        public void UpdateRoomNumber(string id, int roomNumber)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(strConnString))
+                {
+                    connection.Open();
+
+                    // Check if the new RoomNumber exists in Room_Info
+                    bool roomExists;
+                    using (SqlCommand checkRoomCommand = new SqlCommand("SELECT COUNT(*) FROM Room_Info WHERE RoomNumber = @RoomNumber", connection))
+                    {
+                        checkRoomCommand.Parameters.AddWithValue("@RoomNumber", roomNumber);
+                        roomExists = (int)checkRoomCommand.ExecuteScalar() > 0;
+                    }
+
+                    if (roomExists)
+                    {
+                        // Update RoomNumber in Book_Reservation
+                        SqlCommand command = new SqlCommand("UPDATE Book_Reservation SET RoomNumber = @RoomNumber WHERE Id = @Id", connection);
+                        command.Parameters.AddWithValue("@RoomNumber", roomNumber);
+                        command.Parameters.AddWithValue("@Id", id);
+                        command.ExecuteNonQuery();
+                    }
+                    else
+                    {
+                        // Handle case where the new RoomNumber doesn't exist
+                        Console.WriteLine("Error: The specified RoomNumber does not exist.");
+                        // You can choose to log the error, throw an exception, or handle it in another way
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions here (log or throw, depending on your error handling strategy)
+                throw ex;
+            }
+        }
+
+
 
         public void createConn()
         {

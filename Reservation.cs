@@ -101,11 +101,11 @@ namespace Hotel_Management_System
         /*--------------------------------------------------------------------------------------------------------*/
 
         DBAccess dbAccess = new DBAccess();
-        public void BookRoom(string firstName, string lastName, string phoneNumber, int roomNumber, string id)
-        {
-            dbAccess.InsertGuestInfo(firstName, lastName, phoneNumber, roomNumber, id);
+        //public void BookRoom(string firstName, string lastName, string phoneNumber, int roomNumber, string id)
+        //{
+        //    dbAccess.InsertGuestInfo(firstName, lastName, phoneNumber, roomNumber, id);
 
-        }
+        //}
 
         /*--------------------------------------------------------------------------------------------------------*/
 
@@ -178,45 +178,37 @@ namespace Hotel_Management_System
         }
 
 
-        private bool IsRoomOccupied(int room_number)
-        {
-            if(occupancy == true)
-            {
-                // room is empty therefore return false becase room is not occupied
-                return false;
-            }
+       
+        /*--------------------------------------------------------------------------------------------------------*/
 
-            else // the other condition is occupancy == false which indicates that the room is not empty and as a result the program will retutn true as the room is occupied
-            {
-                return true;
-            }
-        }
+
+
 
         public string GetVacancy(string id)
         {
-            Console.WriteLine("Enter the room type the Guest desires, whether Single, Double or Suite:");
-            roomtype = Console.ReadLine();
 
-            int startroomnumber = 0;
-            int endroomnumber = 0;
-            int i;
-            switch (roomtype)
+            Console.WriteLine("Enter the room type the Guest desires, whether Single, Double, or Suite:");
+            RoomType = Console.ReadLine();
+
+            int startRoomNumber = 0;
+            int endRoomNumber = 0;
+            switch (RoomType)
             {
                 case "Single":
-                    startroomnumber = 1;
-                    endroomnumber = 600;
+                    startRoomNumber = 1;
+                    endRoomNumber = 600;
                     Price_Per_Night = 100;
                     break;
 
                 case "Double":
-                    startroomnumber = 601;
-                    endroomnumber = 900;
+                    startRoomNumber = 601;
+                    endRoomNumber = 900;
                     Price_Per_Night = 150;
                     break;
 
                 case "Suite":
-                    startroomnumber = 901;
-                    endroomnumber = 1000;
+                    startRoomNumber = 901;
+                    endRoomNumber = 1000;
                     Price_Per_Night = 250;
                     break;
 
@@ -224,41 +216,55 @@ namespace Hotel_Management_System
                     return "Invalid room type !!";
             }
 
-            for (i = startroomnumber; i <= endroomnumber; i++)
+            DateTime arrivalDateTime = new DateTime(ArrivalDate.Year, ArrivalDate.Month, ArrivalDate.Day);
+            DateTime departureDateTime = new DateTime(DepartureDate.Year, DepartureDate.Month, DepartureDate.Day);
+
+            for (int i = startRoomNumber; i <= endRoomNumber; i++)
             {
-                if (!IsRoomOccupied(i))
+                if (!IsRoomOccupied(i, arrivalDateTime, departureDateTime))
                 {
-                    return $"Room number {i} is vaccant";
+                    RoomNumber = i;
+                    BookRoom(RoomNumber, id); // Book the room if it's available
+                    return $"Room number {i} is vacant";
                 }
-
             }
-            room_number = i;
-            return $" All rooms of type {roomtype} are occupied";
+
+            return $"All rooms of type {RoomType} are occupied";
         }
 
-        public void occupyRoom(int room_number)
+        private bool IsRoomOccupied(int roomNumber, DateTime checkInDateTime, DateTime checkOutDateTime)
         {
-            if (occupancy == true)
-            {
-                occupancy = false;
-                Console.WriteLine($"Room {room_number} is now booked successfully");
-            }
-
-            else
-            {
-                Console.WriteLine("Failed to book the room");
-            }
+            
+                DBAccess dbAccess = new DBAccess(); // Initialize DBAccess
+                return dbAccess.IsRoomOccupiedForDates(roomNumber, checkInDateTime, checkOutDateTime);
         }
 
 
+        private void BookRoom(int roomNumber, string id)
+        {
+            DateTime arrivalDateTime = new DateTime(ArrivalDate.Year, ArrivalDate.Month, ArrivalDate.Day);
+            DateTime departureDateTime = new DateTime(DepartureDate.Year, DepartureDate.Month, DepartureDate.Day);
 
+                               
+                DBAccess dbAccess = new DBAccess(); // Initialize DBAccess
 
+                if (!dbAccess.IsRoomOccupiedForDates(roomNumber, arrivalDateTime, departureDateTime))
+                {
+                    dbAccess.UpdateRoomNumber(id,roomNumber); // Book the room in the database
+                    Console.WriteLine($"Room {roomNumber} is now booked successfully");
+                }
+                else
+                {
+                    Console.WriteLine($"Room {roomNumber} is already occupied");
+                }
+           
+        }
 
 
         // CHECKIn
 
         //Check-In and Check-Out Implementation 
-        // Might use Interface for multiple inheritance
+
 
         //CheckIn Variables
         /*--------------------------------------------------------------------------------------------------------*/
@@ -328,10 +334,7 @@ namespace Hotel_Management_System
         public void CheckInTime(string Id)
         {
             TimeSpan Arrival1 = DateTime.Now.TimeOfDay;
-            //  Hour = Arrival.Hours;
-            //  Minute = Arrival.Minutes;
 
-            //Console.WriteLine($"Arrival Time is {Hour}:{Minute}");
             Console.WriteLine($"Arrival Time is {Arrival1}");
             ArrivalTime = Arrival1;
             PaymentStatus(Id);
