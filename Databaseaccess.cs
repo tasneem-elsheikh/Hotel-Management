@@ -9,7 +9,7 @@ using System.Data.SqlClient;
 
 namespace Hotel_Management_System
 {
-    class DBAccess 
+    public class DBAccess
     {
         private static SqlConnection connection = new SqlConnection();
         private static SqlCommand command = new SqlCommand();
@@ -17,22 +17,207 @@ namespace Hotel_Management_System
         private static SqlDataAdapter adapter = new SqlDataAdapter();
         public SqlTransaction DbTran;
 
-        private static string strConnString = "Data Source=LAPTOP-3MO76OTM\\SQLEXPRESS;Initial Catalog=Test;Integrated Security=True";
+        private static string strConnString = "Data Source=laptop-3mo76otm\\sqlexpress;Initial Catalog=Project;Integrated Security=True";
 
-        
+
         // A Method to insert the Client info inside the database
-        public void InsertCustomerInfo(string firstname, string secondname, string phone_number, int room_number, int id)
+        public void InsertGuestInfo(string firstname, string lastName, string phone_number, int room_number, string id)
         {
-           
-            SqlCommand insertCommand = new SqlCommand("insert into Client_info(FirstName,SecondName,Phone_Number,Room_Number,Id) values(@FirstName, @SecondName, @Phone_Number, @Room_Number, @Id)");
-            insertCommand.Parameters.Add(new SqlParameter("@Id",id));
+
+            SqlCommand insertCommand = new SqlCommand("insert into Guest_Info(FirstName,LastName,Phone_Number,Room_Number,Id) values(@FirstName, @LastName, @Phone_Number, @Room_Number, @Id)");
+            insertCommand.Parameters.Add(new SqlParameter("@Id", id));
             insertCommand.Parameters.Add(new SqlParameter("@Phone_Number", phone_number));
             insertCommand.Parameters.Add(new SqlParameter("@FirstName", firstname));
-            insertCommand.Parameters.Add(new SqlParameter("@SecondName", secondname));
+            insertCommand.Parameters.Add(new SqlParameter("@LastName", lastName));
             insertCommand.Parameters.Add(new SqlParameter("@Room_Number", room_number));
+
 
             executeQuery(insertCommand);
         }
+
+
+        // A Method to insert the Client info inside the database
+        public void DeleteGuestInfo(string id)
+        {
+            try
+            {
+                SqlCommand deleteCommand = new SqlCommand("DELETE FROM Guest_Info WHERE Id = @Id");
+                deleteCommand.Parameters.Add(new SqlParameter("@Id", id));
+
+                executeQuery(deleteCommand);
+            }
+            catch (Exception ex)
+            {
+                // Handle any exceptions that occur during the delete operation
+                //throw ex;
+                Console.WriteLine("Id not found!");
+            }
+        }
+
+
+        //CheckIn using new datatype prototype
+        public void CheckInDate(DateOnly checkInDate, string Id)
+        {
+            // Convert DateOnly to DateTime using constructor
+            DateTime date = new DateTime(checkInDate.Year, checkInDate.Month, checkInDate.Day);
+
+            SqlCommand insertCommand1 = new SqlCommand("insert into Book_Reservation(Id, CheckIn) values(@Id, @CheckIn)");
+            insertCommand1.Parameters.Add(new SqlParameter("@Id", Id));
+            insertCommand1.Parameters.Add(new SqlParameter("@CheckIn", date)); // Use DateTime here
+
+            executeQuery(insertCommand1);
+        }
+
+
+        //Recording the time of arrival of the guest
+        public void UpdateArrivalTime(TimeSpan arrivalTime, string id, string status)
+        {
+
+            SqlCommand updateCommand = new SqlCommand("UPDATE Book_Reservation SET Check_In_Time = @Check_In_Time, Status = @Status WHERE Id = @Id");
+            updateCommand.Parameters.Add(new SqlParameter("@Id", id));
+            updateCommand.Parameters.Add(new SqlParameter("@Check_In_Time", arrivalTime)); // Convert TimeOnly to string
+            updateCommand.Parameters.Add(new SqlParameter("@Status", status)); // Updating Status
+            executeQuery(updateCommand);
+
+        }
+
+
+        public void UpdateArrivalStatus(string status, string id)
+        {
+
+            SqlCommand updateCommand = new SqlCommand("UPDATE Book_Reservation SET Status = @Status WHERE Id = @Id");
+            updateCommand.Parameters.Add(new SqlParameter("@Id", id));
+            updateCommand.Parameters.Add(new SqlParameter("@Status", status)); // Convert TimeOnly to string
+
+            executeQuery(updateCommand);
+        }
+
+
+
+        public void CheckOutDate(DateOnly DepartureDate, string id)
+        {
+
+            DateTime date = new DateTime(DepartureDate.Year, DepartureDate.Month, DepartureDate.Day);
+
+            SqlCommand updateCommand = new SqlCommand("UPDATE Book_Reservation SET CheckOut = @CheckOut WHERE Id = @Id");
+            updateCommand.Parameters.Add(new SqlParameter("@Id", id));
+            updateCommand.Parameters.Add(new SqlParameter("@CheckOut", date)); // Use DateTime here
+
+            executeQuery(updateCommand);
+        }
+
+
+        //Recording the time of Check Out of the guest
+        public void UpdateDepartureTime(TimeSpan DepartureTime, string id)
+        {
+            // Assuming your database column for check-in time is named Check_In_Time
+            SqlCommand updateCommand = new SqlCommand("UPDATE Book_Reservation SET Check_Out_Time = @Check_Out_Time WHERE Id = @Id");
+            updateCommand.Parameters.Add(new SqlParameter("@Id", id));
+            updateCommand.Parameters.Add(new SqlParameter("@Check_Out_Time", DepartureTime));
+
+            executeQuery(updateCommand);
+
+        }
+
+
+        public void UpdateCheckInDate(string id, DateOnly newCheckInDate)
+        {
+
+            DateTime date = new DateTime(newCheckInDate.Year, newCheckInDate.Month, newCheckInDate.Day);
+
+            SqlCommand updateCommand = new SqlCommand("UPDATE Book_Reservation SET CheckIn = @CheckIn WHERE Id = @Id");
+            updateCommand.Parameters.Add(new SqlParameter("@Id", id));
+            updateCommand.Parameters.Add(new SqlParameter("@CheckIn", date));
+
+            executeQuery(updateCommand);
+        }
+
+        public void UpdateCheckOutDate(string id, DateOnly newCheckOutDate)
+        {
+
+            DateTime date = new DateTime(newCheckOutDate.Year, newCheckOutDate.Month, newCheckOutDate.Day);
+
+            SqlCommand updateCommand = new SqlCommand("UPDATE Book_Reservation SET CheckOut = @CheckOut WHERE Id = @Id");
+            updateCommand.Parameters.Add(new SqlParameter("@Id", id));
+            updateCommand.Parameters.Add(new SqlParameter("@CheckOut", date));
+
+            executeQuery(updateCommand);
+        }
+
+        /*--------------------------------------------------------------------------------------------------------*/
+
+
+
+        // Methods
+        public bool IsRoomOccupiedForDates(int roomNumber, DateTime checkInDateTime, DateTime checkOutDateTime)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(strConnString))
+                {
+                    connection.Open();
+                    string query = "SELECT COUNT(*) FROM Book_Reservation  WHERE RoomNumber = @RoomNumber " +
+                                   "AND ((CheckIn <= @CheckOutDateTime AND CheckOut >= @CheckInDateTime) " +
+                                   "OR (CheckIn >= @CheckInDateTime AND CheckIn <= @CheckOutDateTime))";
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@RoomNumber", roomNumber);
+                        command.Parameters.AddWithValue("@CheckInDateTime", checkInDateTime);
+                        command.Parameters.AddWithValue("@CheckOutDateTime", checkOutDateTime);
+
+                        int count = (int)command.ExecuteScalar();
+                        return count > 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions here (log or throw, depending on your error handling strategy)
+                throw ex;
+            }
+        }
+
+        public void UpdateRoomNumber(string id, int roomNumber)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(strConnString))
+                {
+                    connection.Open();
+
+                    // Check if the new RoomNumber exists in Room_Info
+                    bool roomExists;
+                    using (SqlCommand checkRoomCommand = new SqlCommand("SELECT COUNT(*) FROM Room_Info WHERE RoomNumber = @RoomNumber", connection))
+                    {
+                        checkRoomCommand.Parameters.AddWithValue("@RoomNumber", roomNumber);
+                        roomExists = (int)checkRoomCommand.ExecuteScalar() > 0;
+                    }
+
+                    if (roomExists)
+                    {
+                        // Update RoomNumber in Book_Reservation
+                        SqlCommand command = new SqlCommand("UPDATE Book_Reservation SET RoomNumber = @RoomNumber WHERE Id = @Id", connection);
+                        command.Parameters.AddWithValue("@RoomNumber", roomNumber);
+                        command.Parameters.AddWithValue("@Id", id);
+                        command.ExecuteNonQuery();
+                    }
+                    else
+                    {
+                        // Handle case where the new RoomNumber doesn't exist
+                        Console.WriteLine("Error: The specified RoomNumber does not exist.");
+                        // You can choose to log the error, throw an exception, or handle it in another way
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions here (log or throw, depending on your error handling strategy)
+                throw ex;
+            }
+        }
+
+
 
         public void createConn()
         {
@@ -152,8 +337,76 @@ namespace Hotel_Management_System
             catch (Exception ex)
             {
                 throw ex;
+
             }
         }
+
+
+
+        /*--------------------------------------------------------------------------------------------------------*/
+
+
+        /*--------------------------------------------------------------------------------------------------------*/
+
+
+
+
+
+        //Searching inside the client info table and returning variables
+
+        public Reservation SearchCustomerById(string id)
+        {
+            try
+            {
+                // Create a new Reservation object to store the search result
+                Reservation customer = new Reservation();
+
+                // Open the database connection if it's not already open
+                if (connection.State == ConnectionState.Closed)
+                {
+                    createConn();
+                }
+
+                // Define the SQL query for searching based on the Id (primary key)
+                string query = "SELECT * FROM Guest_Info WHERE Id = @Id";
+
+                // Create a SqlCommand object with the query and connection
+                using (SqlCommand searchCommand = new SqlCommand(query, connection))
+                {
+                    // Add a parameter for the Id
+                    searchCommand.Parameters.AddWithValue("@Id", id);
+
+                    // Execute the command and read the data using SqlDataReader
+                    using (SqlDataReader reader = searchCommand.ExecuteReader())
+                    {
+                        // Check if there is data to read
+                        if (reader.Read())
+                        {
+                            // Fill the Reservation object with data from the database
+                            customer.Id = reader["Id"].ToString();
+                            customer.FirstName = reader["FirstName"].ToString();
+                            customer.LastName = reader["SecondName"].ToString();
+                            customer.PhoneNumber = reader["Phone_Number"].ToString();
+                            customer.RoomNumber = Convert.ToInt32(reader["Room_Number"]);
+                            // Other properties can be filled similarly
+                        }
+                    }
+                }
+
+                // Return the Reservation object containing the search result
+                return customer;
+            }
+            catch (Exception ex)
+            {
+                // Handle any exceptions that occur during the search
+                throw ex;
+            }
+        }
+
+
+
+
+
     }
 
 }
