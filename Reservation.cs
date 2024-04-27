@@ -30,13 +30,14 @@ namespace Hotel_Management_System
         public string Id 
         { 
             get { return id; }
-            set { 
-                if(value.Length == 14) // Checking the length of the national id
-                {
+            set
+            {
+                //if (value.Length == 14) // Checking the length of the national id
+                //{
                     id = value;
-                }
-                }
+                //}
             }
+        }
 
         public string FirstName
         {
@@ -248,16 +249,17 @@ namespace Hotel_Management_System
                                
                 DBAccess dbAccess = new DBAccess(); // Initialize DBAccess
 
-                if (!dbAccess.IsRoomOccupiedForDates(roomNumber, arrivalDateTime, departureDateTime))
-                {
-                    dbAccess.UpdateRoomNumber(id,roomNumber); // Book the room in the database
-                    Console.WriteLine($"Room {roomNumber} is now booked successfully");
-                }
-                else
-                {
-                    Console.WriteLine($"Room {roomNumber} is already occupied");
-                }
-           
+            if (!dbAccess.IsRoomOccupiedForDates(roomNumber, arrivalDateTime, departureDateTime))
+            {
+                dbAccess.UpdateRoomNumber(id, roomNumber); // Book the room in the database
+                dbAccess.UpdateRoomNumber_Guestinfo(id, roomNumber);
+                Console.WriteLine($"Room {roomNumber} is now booked successfully");
+            }
+            else
+            {
+                Console.WriteLine($"Room {roomNumber} is already occupied");
+            }
+
         }
 
 
@@ -329,6 +331,7 @@ namespace Hotel_Management_System
             }
             Db1.UpdateArrivalStatus(status, Id);
         }
+
 
         //Storing the Arrival time of CheckIn
         public void CheckInTime(string Id)

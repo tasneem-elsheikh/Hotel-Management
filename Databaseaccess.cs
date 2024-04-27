@@ -186,28 +186,35 @@ namespace Hotel_Management_System
                 {
                     connection.Open();
 
-                    // Check if the new RoomNumber exists in Room_Info
-                    bool roomExists;
-                    using (SqlCommand checkRoomCommand = new SqlCommand("SELECT COUNT(*) FROM Room_Info WHERE RoomNumber = @RoomNumber", connection))
-                    {
-                        checkRoomCommand.Parameters.AddWithValue("@RoomNumber", roomNumber);
-                        roomExists = (int)checkRoomCommand.ExecuteScalar() > 0;
-                    }
-
-                    if (roomExists)
-                    {
                         // Update RoomNumber in Book_Reservation
                         SqlCommand command = new SqlCommand("UPDATE Book_Reservation SET RoomNumber = @RoomNumber WHERE Id = @Id", connection);
                         command.Parameters.AddWithValue("@RoomNumber", roomNumber);
                         command.Parameters.AddWithValue("@Id", id);
                         command.ExecuteNonQuery();
-                    }
-                    else
-                    {
-                        // Handle case where the new RoomNumber doesn't exist
-                        Console.WriteLine("Error: The specified RoomNumber does not exist.");
-                        // You can choose to log the error, throw an exception, or handle it in another way
-                    }
+                   
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions here (log or throw, depending on your error handling strategy)
+                throw ex;
+            }
+        }
+
+        public void UpdateRoomNumber_Guestinfo(string id, int roomNumber)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(strConnString))
+                {
+                    connection.Open();
+
+                    // Update RoomNumber in Book_Reservation
+                    SqlCommand command = new SqlCommand("UPDATE Guest_Info SET Room_Number = @Room_Number WHERE Id = @Id", connection);
+                    command.Parameters.AddWithValue("@Room_Number", roomNumber);
+                    command.Parameters.AddWithValue("@Id", id);
+                    command.ExecuteNonQuery();
+                  
                 }
             }
             catch (Exception ex)

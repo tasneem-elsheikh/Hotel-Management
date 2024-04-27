@@ -202,21 +202,20 @@ namespace Hotel_Management_System
                     //Edit
                     else if (Operation == 4)
                     {
-                        Console.WriteLine("Enter the operation: 1-Delete Reservation \n 2-Edit Data \n ");
+                        Console.WriteLine("Enter the operation: 1-Delete Reservation \n 2-Edit Reservation \n 3-Guest Info");
                         int Edit = int.Parse(Console.ReadLine());
 
                         //Delete
                         if (Edit == 1)
                         {
-                            Console.WriteLine("Enter the Guest's Id: ");
-                            G1.Id = Console.ReadLine();
-                            G1 = G1.SearchCustomerById(G1.Id);
-                            G1.DeleteClient(G1.Id);
+                            //Doesnt need to search
+                           // G1 = G1.SearchCustomerById(G1.Id); 
+                           // G1 = G1.Returning_ReservationInfo(G1.Id);
+                            G1.DeleteReservation(G1.Id);
                         }
 
-
-                        //Delete
-                        if (Edit == 1)
+                        //Edit Reservation date
+                        if(Edit == 2)
                         {
                             Console.WriteLine("Enter the Guest's Id: ");
                             G1.Id = Console.ReadLine();
